@@ -57,7 +57,7 @@ function displayDetails(obj){
             Table_3.removeChild(li);
         }
     }
-    li.textContent=obj.price+"_"+obj.dish+"_"+obj.category
+    li.textContent=`Price:  ${obj.price}---- Dish:  ${obj.dish}---- Category:  ${obj.category}`
     li.appendChild(deletebtn);
 }
 

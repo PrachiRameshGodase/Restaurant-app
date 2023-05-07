@@ -1,7 +1,7 @@
 const form=document.getElementById("form");
 form.addEventListener("submit",onSubmit);
 
-function onSubmit(e){
+async function onSubmit(e){
     e.preventDefault();
     const price=document.getElementById("price").value;
     const dish=document.getElementById("dish").value;
@@ -11,13 +11,13 @@ function onSubmit(e){
         dish,
         category
     }
-    axios.post("https://crudcrud.com/api/84c5da40c44d489cbd1021d9660976a0/order",obj)
-    .then((response)=>{
-        displayDetails(response.data)
-    })
-    .catch((error)=>{
-        console.log(error);
-    })
+    try{
+    const response= await axios.post("https://crudcrud.com/api/6317cad7f5a247b59aacf601f9cd09a8/order",obj)
+    console.log(response.data);
+    displayDetails();
+    }catch(err){
+        console.log(err);
+    }
     
 
 }
@@ -35,20 +35,23 @@ async function displayDetails(){
     Table_2.innerHTML="";
     Table_3.innerHTML="";
     try{
-    const response=await axios.get("https://crudcrud.com/api/84c5da40c44d489cbd1021d9660976a0/order")
+    const response=await axios.get("https://crudcrud.com/api/6317cad7f5a247b59aacf601f9cd09a8/order");
     const orders=response.data;
     for(let i=0;i<orders.length;i++){
+//Storing the data key as order
         const order=orders[i];
 
     const li=document.createElement("li");
     li.id="li";
+
+//delete button
     const deletebtn=document.createElement("button")
     deletebtn.id="btn1";
     deletebtn.innerText="Delete Order"
     
-    deletebtn.addEventListener("click",deleteOrder)
-    async function deleteOrder(){
-        await axios.delete(`https://crudcrud.com/api/84c5da40c44d489cbd1021d9660976a0/order/${order._id}`)
+    // deletebtn.addEventListener("click",deleteOrder)
+    deletebtn.onclick=async()=>{
+        await axios.delete(`https://crudcrud.com/api/6317cad7f5a247b59aacf601f9cd09a8/order/${order._id}`)
         if(order.category==table1.value){
             Table_1.removeChild(li);
         }
@@ -60,8 +63,7 @@ async function displayDetails(){
         }
     }
 
-    // li.textContent=order.price+"_"+order.dish+"_"+order.category
-    // li.appendChild(deletebtn);
+//adding the data in particular list after checking category
     if(order.category==table1.value){
         Table_1.appendChild(li);
     }
@@ -71,7 +73,7 @@ async function displayDetails(){
     else{
         Table_3.appendChild(li);
     }
-    li.textContent=order.price+"_"+order.dish+"_"+order.category
+    li.textContent=`Price: ${order.price} ---- Dish:${order.dish} ---- Category:${order.category}`
     li.appendChild(deletebtn);
 }
     }catch(error){
